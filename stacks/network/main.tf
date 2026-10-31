@@ -1,5 +1,5 @@
-# Nettverkslaget for ALLE tjenestene: ressursgruppa, VNet-et, og ett subnett
-# med NSG per tjeneste.
+# The original network stack temporarily retains ownership of the
+# shared resource group and VNet during the migration.
 
 locals {
   tags = {
@@ -24,18 +24,14 @@ module "vnet" {
   tags                = local.tags
 }
 
-module "subnet" {
-  source   = "../../modules/subnet"
-  for_each = var.tjenester
+# Release all service-specific network resources from the old state.
+# The resources remain in Azure and will be imported into the
+# individual service states.
 
-  service             = each.key
-  resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
-  vnet_name           = module.vnet.name
-  prefix              = each.value.prefix
-  delegate_web        = each.value.runtime == "webapp"
-  allow_http_from     = var.allow_http_from
-  tags                = local.tags
+removed {
+  from = module.subnet
+
+  lifecycle {
+    destroy = false
+  }
 }
-
-# CI/CD trigger test: no infrastructure change.
