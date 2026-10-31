@@ -1,14 +1,24 @@
 variable "kortnavn" {
-  description = "Kortnavnet ditt."
+  description = "Short project identifier."
   type        = string
 }
 
 variable "miljo" {
-  description = "Miljøet. Settes av scripts/kjor.sh."
+  description = "Deployment environment."
   type        = string
 
   validation {
     condition     = contains(["dev", "prod"], var.miljo)
-    error_message = "miljo må være dev eller prod."
+    error_message = "miljo must be dev or prod."
   }
+}
+
+variable "location" {
+  description = "Azure region."
+  type        = string
+}
+
+variable "address_space" {
+  description = "Address space of the shared VNet."
+  type        = list(string)
 }
