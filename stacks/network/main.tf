@@ -1,33 +1,22 @@
-# The original network stack temporarily retains ownership of the
-# shared resource group and VNet during the migration.
+# Release the shared resource group from the old network state.
+removed {
+  from = azurerm_resource_group.this
 
-locals {
-  tags = {
-    eier  = var.kortnavn
-    miljo = var.miljo
-    kurs  = "dcst3005-oblig2"
+  lifecycle {
+    destroy = false
   }
 }
 
-resource "azurerm_resource_group" "this" {
-  name     = "rg-${var.kortnavn}-oblig2-${var.miljo}"
-  location = var.location
-  tags     = local.tags
+# Release the shared VNet from the old network state.
+removed {
+  from = module.vnet
+
+  lifecycle {
+    destroy = false
+  }
 }
 
-module "vnet" {
-  source              = "../../modules/vnet"
-  name                = "vnet-${var.kortnavn}-${var.miljo}"
-  resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
-  address_space       = var.address_space
-  tags                = local.tags
-}
-
-# Release all service-specific network resources from the old state.
-# The resources remain in Azure and will be imported into the
-# individual service states.
-
+# Retain the earlier subnet release declaration until cleanup.
 removed {
   from = module.subnet
 
