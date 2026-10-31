@@ -66,3 +66,13 @@ variable "webapp_sku" {
   type        = string
   default     = "B1"
 }
+
+variable "extra_tcp_rules" {
+  description = "Additional inbound TCP rules for the service."
+  type = map(object({
+    port        = number
+    source_cidr = string
+    priority    = number
+  }))
+  default = {}
+}
