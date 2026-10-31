@@ -37,3 +37,5 @@ module "subnet" {
   allow_http_from     = var.allow_http_from
   tags                = local.tags
 }
+
+# CI/CD trigger test: no infrastructure change.
