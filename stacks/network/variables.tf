@@ -1,3 +1,7 @@
+# tflint-ignore-file: terraform_unused_declarations
+# Temporary migration stack: retain variables for existing configuration files.
+# Remove this entire stack after migration is verified in both environments.
+
 variable "kortnavn" {
   description = "Kortnavnet ditt. Settes i config/felles.tfvars."
   type        = string
